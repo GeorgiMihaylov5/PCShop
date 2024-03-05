@@ -16,3 +16,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*-------Contacts-------*/
+.rounded-2 {
+    border-radius: 2.25rem !important;
+}
+
+.bg-blue {
+    background-color: #2196f3 !important;
+}
