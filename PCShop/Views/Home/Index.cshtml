@@ -1,8 +1,82 @@
-﻿@{
+﻿@* @model List<ProductAllViewModel> *@
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div style="position: relative">
+    <img src="~/Images/computers.jpg" class="img-fluid rounded" />
+    <div class="text-block col-3">
+        <h5 class="some-paragraph" style="color: white; margin-bottom: 15px">See our promotions:</h5>
+        <a asp-controller="Products" asp-action="AllDiscounts" class="some-paragraph btn btn-outline-light">Promotions</a>
+    </div>
+</div>
+<div class="text-center mt-3">
+    <h3>See Our Products</h3>
+
+    <div class="col-3 d-inline-block">
+        <a asp-controller="Computers" asp-action="All" class="text-decoration-none">
+            <img src="~/Images/computerProduct.webp" width="200" height="200" class="img-fluid" />
+            <p class="font-weight-bolder text-dark">Computers</p>
+        </a>
+    </div>
+    <div class="col-3 d-inline-block">
+        <a asp-controller="Components" asp-action="All" class="text-decoration-none">
+            <img src="~/Images/processorProduct.webp" width="200" height="200" class="img-fluid" />
+            <p class="font-weight-bolder text-dark">Components</p>
+        </a>
+    </div>
+    <div class="col-3 d-inline-block">
+        <a asp-controller="Peripheries" asp-action="All" class="text-decoration-none">
+            <img src="~/Images/keyboardProduct.png" width="200" height="200" class="img-fluid" />
+            <p class="font-weight-bolder text-dark">Periphery</p>
+        </a>
+    </div>
+    @*<div>
+    <img />
+    <p>Accessories</p>
+    </div>*@
+</div>
+<div>
+    <h3 class="text-center mt-3 bg-primary p-4 text-light rounded-pill mb-4">TOP PRODUCTS</h3>
+
+    <div class="b-inline-top">
+        <ul class="list-group flex-sm-row flex-wrap justify-content-between justify-content-smd-start">
+           @*  @foreach (var item in Model)
+            {
+                <li class="list-group-item col-md-4 text-center m-1 rounded" style="flex: 0 0 32%;">
+                    <div class="d-inline-block align-top">
+                        <a asp-action="Details" asp-controller="Products" asp-route-id="@item.Id">
+                            <img src="@item.Image" width="165" height="145">
+                        </a>
+                    </div>
+                    <div class="d-inline-block col-6">
+                        <div>
+                            <p class="font-weight-bold">@item.Category @item.Manufacturer @item.Model</p>
+                        </div>
+                        <div style="height: 24px">
+                            @if (item.Discount > 0)
+                            {
+                                var oldPrice = $"{item.Discount + item.Price:f2}";
+                                <p class="mb-0"><s>@oldPrice lv.</s></p>
+                            }
+                        </div>
+                        <div>
+                            @if (item.Discount > 0)
+                            {
+                                <span class="font-weight-bold text-danger" style="font-size: 17px">@item.Price lv.</span>
+                            }
+                            else
+                            {
+                                <span class="font-weight-bold" style="font-size: 17px"> @item.Price lv.</span>
+                            }
+                        </div>
+                        <div>
+                            <a class="btn btn-primary" asp-action="Details" asp-controller="Products" asp-route-id="@item.Id">SEE MORE</a>
+                        </div>
+                    </div>
+                </li>
+            } *@
+        </ul>
+    </div>
 </div>
