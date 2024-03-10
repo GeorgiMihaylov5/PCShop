@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using PCShop.Abstraction;
 using PCShop.Data;
+using PCShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddTransient<IProductService, ProductService>();
 
 var app = builder.Build();
 

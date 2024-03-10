@@ -56,10 +56,10 @@ namespace PCShop.Services
                 .ToList();
         }
 
-        public ICollection<Product> GetAllByCategory(Category category)
+        public ICollection<Product> GetAllByCategory(string category)
         {
             return _context.Products
-                .Where(x => x.Category == category && !x.IsDeleted)
+                .Where(x => x.Category == (Category)Enum.Parse(typeof(Category), category, true) && !x.IsDeleted)
                 .ToList();
         }
 

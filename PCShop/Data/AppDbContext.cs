@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PCShop.Entities;
+using PCShop.Models;
 
 namespace PCShop.Data
 {
@@ -12,6 +13,7 @@ namespace PCShop.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderedProduct> OrderedProducts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<PCShop.Models.AllProductsVM> AllProductsVM { get; set; }
 
     }
 }

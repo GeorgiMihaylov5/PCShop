@@ -31,19 +31,22 @@
 
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="All" asp-route-category="PC">PC</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="All">All</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="All" asp-route-category="Laptop">Laptops</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="AllByCategory" asp-route-category="PC">PC</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Products" asp-action="All" asp-route-category="Component">Components</a>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="AllByCategory" asp-route-category="Laptop">Laptops</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-controller="Products" asp-action="All" asp-route-category="Periphery">Peripheries</a>
+                                        <a class="dropdown-item" asp-controller="Products" asp-action="AllByCategory" asp-route-category="Component">Components</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="All" asp-route-category="Accessory">Accessories</a>
+                                        <a class="dropdown-item" asp-controller="Products" asp-action="AllByCategory" asp-route-category="Periphery">Peripheries</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="AllByCategory" asp-route-category="Accessory">Accessories</a>
                                     </li>
                                 </ul>
                             </div>

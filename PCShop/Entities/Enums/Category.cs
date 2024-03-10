@@ -6,6 +6,6 @@
         PC = 1,
         Laptop = 2,
         Peripheral = 3,
-        Accesory = 4
+        Accessory = 4
     }
 }
