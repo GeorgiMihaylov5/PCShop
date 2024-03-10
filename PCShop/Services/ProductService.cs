@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Server.IIS.Core;
-using Microsoft.EntityFrameworkCore;
-using PCShop.Abstraction;
+﻿using PCShop.Abstraction;
 using PCShop.Data;
 using PCShop.Entities;
 using PCShop.Entities.Enums;
