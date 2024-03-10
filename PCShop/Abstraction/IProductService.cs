@@ -7,8 +7,8 @@ namespace PCShop.Abstraction
     {
         public ICollection<Product> GetAll();
         public ICollection<Product> GetAllByCategory(Category category);
-        public Product SetDiscount(string id, decimal discount);
-        public Product RemoveDiscount(string id, int percentige);
+        public Product SetDiscount(string id, int percentage);
+        public Product RemoveDiscount(string id);
         public Product Get(string id);
         public Product Remove(string id);
         public Product Create(string name,
