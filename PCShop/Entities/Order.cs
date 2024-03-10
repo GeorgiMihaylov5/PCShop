@@ -24,5 +24,6 @@ namespace PCShop.Entities
 
         public decimal TotalPrice { get; set; }
 
+        public ICollection<OrderedProduct> OrderedProducts { get; set; }
     }
 }
