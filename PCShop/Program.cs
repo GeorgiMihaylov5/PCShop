@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using PCShop.Data;
+using PCShop.Options;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,26 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer( builder.Configuration.GetConnectionString("DefaultConnection")));
 //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.Configure<JWTServiceOption>(options =>
+{
+    options.JwtKey = builder.Configuration["JWT:Key"];
+    options.Issuer = builder.Configuration["JWT:Issuer"];
+    options.ExpiresDays = int.Parse(builder.Configuration["JWT:ExpiresDays"]);
+});
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidateIssuer = true,
+            ValidateAudience = true
+        };
+    });
 
 var app = builder.Build();
 
