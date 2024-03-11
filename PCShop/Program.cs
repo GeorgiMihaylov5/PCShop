@@ -1,6 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using PCShop.Abstraction;
 using PCShop.Data;
+using PCShop.Options;
+using PCShop.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
