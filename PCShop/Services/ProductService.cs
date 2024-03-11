@@ -15,14 +15,14 @@ namespace PCShop.Services
         }
         public Product Create(string name, string description, string model, int quantity, decimal price, string image, Category category)
         {
-            var product = new Product 
-            { 
-                Name = name, 
-                Description = description, 
-                Model = model, 
-                Quantity = quantity, 
-                Price = price, 
-                Image = image, 
+            var product = new Product
+            {
+                Name = name,
+                Description = description,
+                Model = model,
+                Quantity = quantity,
+                Price = price,
+                Image = image,
                 Category = category,
                 AddedOn = DateTime.UtcNow,
                 Discount = 0,
@@ -37,7 +37,7 @@ namespace PCShop.Services
 
         public Product Get(string id)
         {
-            if(id is null)
+            if (id is null)
             {
                 throw new ArgumentNullException("Invalid ID: ID cannot be null");
             }
@@ -89,7 +89,7 @@ namespace PCShop.Services
         {
             var product = Get(id) ?? throw new InvalidOperationException();
 
-            if (percentage < 0 || percentage > 100) 
+            if (percentage < 0 || percentage > 100)
             {
                 throw new InvalidOperationException("Wrong percentage bro");
             }
