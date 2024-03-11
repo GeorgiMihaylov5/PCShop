@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PCShop.Entities.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PCShop.Entities
@@ -35,7 +36,7 @@ namespace PCShop.Entities
         public string PhoneNumber { get; set; }
 
         public ICollection<Order> Orders { get; set; }
-
+        public UserRole Role { get; set; }
         public bool IsAdministrator { get; set; }
         //TODO
     }
