@@ -17,6 +17,14 @@ options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IJWTService, JWTService>();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.IsEssential = true; // make the session cookie essential
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
+});
 
 builder.Services.Configure<JWTServiceOption>(options =>
 {
@@ -50,6 +58,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseRouting();
 
