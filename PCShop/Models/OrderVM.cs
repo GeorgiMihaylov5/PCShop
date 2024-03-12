@@ -1,6 +1,5 @@
-﻿using PCShop.Entities.Enums;
-using PCShop.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using PCShop.Entities;
+using PCShop.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PCShop.Models
@@ -11,7 +10,7 @@ namespace PCShop.Models
         public string Id { get; set; }
         public DateTime OrderedOn { get; set; }
 
-        public User User { get; set; }
+        public UserVM User { get; set; }
 
         public OrderStatus Status { get; set; }
 
@@ -20,6 +19,6 @@ namespace PCShop.Models
 
         public decimal TotalPrice { get; set; }
 
-        public ICollection<OrderedProduct> OrderedProducts { get; set; }
+        public ICollection<OrderedProductVM> OrderedProducts { get; set; }
     }
 }

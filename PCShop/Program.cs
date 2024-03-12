@@ -1,11 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using PCShop.Abstraction;
 using PCShop.Data;
-using PCShop.Options;
+using PCShop.Entities;
+using PCShop.Infrastructure;
 using PCShop.Services;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,37 +17,56 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddDefaultIdentity<User>()
+                  .AddRoles<IdentityRole>()
+                  .AddEntityFrameworkStores<AppDbContext>()
+                  .AddDefaultTokenProviders();
+
 builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IJWTService, JWTService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
-builder.Services.AddSession(options =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.IsEssential = true; // make the session cookie essential
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // session timeout
-});
+    options.LoginPath = "/Users/Login";
+    options.LogoutPath = "/Users/Logout";
 
-builder.Services.Configure<JWTServiceOption>(options =>
-{
-    options.JwtKey = builder.Configuration["JWT:Key"];
-    options.Issuer = builder.Configuration["JWT:Issuer"];
-    options.ExpiresDays = int.Parse(builder.Configuration["JWT:ExpiresDays"]);
-});
-
-builder.Services.AddAuthentication()
-    .AddJwtBearer(options =>
+    options.Events = new CookieAuthenticationEvents()
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        OnRedirectToLogin = redirectContext =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-            ValidIssuer = builder.Configuration["JWT:Issuer"],
-            ValidateIssuer = true,
-            ValidateAudience = true
-        };
-    });
+            string redirectUri = redirectContext.RedirectUri;
+
+            UriHelper.FromAbsolute(
+                redirectUri,
+                out string scheme,
+                out HostString host,
+                out PathString path,
+                out QueryString query,
+                out FragmentString fragment);
+
+            redirectUri = UriHelper.BuildAbsolute(scheme, host, path);
+
+            redirectContext.Response.Redirect(redirectUri);
+
+            return Task.CompletedTask;
+        }
+    };
+});
+
+
+builder.Services.Configure<IdentityOptions>(option =>
+{
+    option.SignIn.RequireConfirmedEmail = false;
+    option.Password.RequireDigit = false;
+    option.Password.RequiredLength = 5;
+    option.Password.RequireLowercase = false;
+    option.Password.RequireNonAlphanumeric = false;
+    option.Password.RequireUppercase = false;
+    option.Password.RequiredUniqueChars = 0;
+});
 
 var app = builder.Build();
+app.PrepareDatabase().Wait();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -58,10 +78,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseSession();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

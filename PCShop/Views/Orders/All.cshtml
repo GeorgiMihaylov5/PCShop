@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PCShop.Models.OrderVM>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="d-lg-inline-block align-top col-3" id="filter-left">
+    @await Html.PartialAsync("~/Views/Users/_ManageLayoutPartialView.cshtml")
+</div>
+<div class="d-lg-inline-block align-top col-md-8 m-auto">
+   
+    @if (Model.Count() == 0)
+    {
+        <h4>No Orders</h4>
+    }
+    @if (Model.Count() > 0)
+    {
+        <div class="alert alert-info" style="margin-top: 25px">
+            <h2 class="text-center">Orders - @Model.Count()</h2>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div>
+                <div>
+                    <h4>
+                        Order
+                    </h4>
+                    <div class="row justify-content-between m-0">
+                        <span>
+                            Status: @item.Status
+                        </span>
+                        <span>
+                            Ordered on: @item.OrderedOn
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <p>User: @item.User.FirstName @item.User.LastName</p>
+                </div>
+                <div class="row justify-content-between m-0">
+                    <p class="order-price-p">Total Price: @item.TotalPrice</p>
+
+                    <div>
+                        @if (User.IsInRole("Employee"))
+                        {
+                            <a class=" btn btn-success" asp-action="Edit" asp-controller="Orders" asp-route-id="@item.Id">Edit</a>
+                        }
+                        <a class="order-details-btn btn" asp-action="Details" asp-controller="Orders" asp-route-id="@item.Id">Details</a>
+                    </div>
+                </div>
+            </div>
+            <hr />
+        }
+    }
+</div>

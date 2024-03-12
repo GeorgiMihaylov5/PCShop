@@ -1,6 +1,4 @@
-﻿@* @model List<ProductAllViewModel> *@
-
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -15,27 +13,23 @@
     <h3>See Our Products</h3>
 
     <div class="col-3 d-inline-block">
-        <a asp-controller="Computers" asp-action="All" class="text-decoration-none">
+        <a asp-controller="Products" asp-action="AllByCategory" asp-route-category="PC" class="text-decoration-none">
             <img src="~/Images/computerProduct.webp" width="200" height="200" class="img-fluid" />
             <p class="font-weight-bolder text-dark">Computers</p>
         </a>
     </div>
     <div class="col-3 d-inline-block">
-        <a asp-controller="Components" asp-action="All" class="text-decoration-none">
+        <a asp-controller="Products" asp-action="AllByCategory" asp-route-category="Component" class="text-decoration-none">
             <img src="~/Images/processorProduct.webp" width="200" height="200" class="img-fluid" />
             <p class="font-weight-bolder text-dark">Components</p>
         </a>
     </div>
     <div class="col-3 d-inline-block">
-        <a asp-controller="Peripheries" asp-action="All" class="text-decoration-none">
+        <a asp-controller="Products" asp-action="AllByCategory" asp-route-category="Periphery" class="text-decoration-none">
             <img src="~/Images/keyboardProduct.png" width="200" height="200" class="img-fluid" />
-            <p class="font-weight-bolder text-dark">Periphery</p>
+            <p class="font-weight-bolder text-dark">Peripheries</p>
         </a>
     </div>
-    @*<div>
-    <img />
-    <p>Accessories</p>
-    </div>*@
 </div>
 <div>
     <h3 class="text-center mt-3 bg-primary p-4 text-light rounded-pill mb-4">TOP PRODUCTS</h3>

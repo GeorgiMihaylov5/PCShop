@@ -1,0 +1,37 @@
+﻿<div>
+    <ul class="nav nav-pills flex-column" id="accountMenu">
+        <li class="nav-item">
+            <a class="btn nav-link profile-nav" asp-action="Profile" asp-controller="Users">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn nav-link profile-nav" asp-action="My" asp-controller="Orders">Orders</a>
+        </li>
+        <li class="nav-item">
+            <a class="btn nav-link profile-nav" asp-action="ChangePassword" asp-controller="Users">Change Password</a>
+        </li>
+        @if (User.IsInRole("Employee"))
+        {
+
+            <li class="nav-item mb-3">
+                <a class="btn nav-link profile-nav" asp-action="All" asp-controller="Orders">Control Panel</a>
+            </li>
+        }
+    </ul>
+</div>
+<script>
+    let url = window.location.pathname.split('/')
+    let btns = document.getElementsByClassName("profile-nav");
+
+    if (url[url.length - 1] == 'Profile') {
+        btns[0].className += " active";
+    }
+    else if (url[url.length - 1] == 'My') {
+        btns[1].className += " active";
+    }
+    else if (url[url.length - 1] == 'ChangePassword') {
+        btns[2].className += " active";
+    } else {
+        btns[3].className += " active";
+    }
+            //if (url[url.length - 2] == 'Employees' && url[url.length - 1] == 'All')
+</script>

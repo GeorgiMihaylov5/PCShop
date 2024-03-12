@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PCShop.Abstraction;
 using PCShop.Models;
 
@@ -32,7 +33,7 @@ namespace PCShop.Controllers
 
             return View(products);
         }
-
+        [Route("[controller]/[action]/{category}")]
         public IActionResult AllByCategory(string category)
         {
             var products = _productService.GetAllByCategory(category)
@@ -53,6 +54,7 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
 
+        [Authorize]
         public IActionResult AllDiscounts()
         {
             var products = _productService.GetAll()
