@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PCShop.Entities;
 using PCShop.Models;
@@ -50,6 +51,12 @@ namespace PCShop.Controllers
                 || await userManager.FindByNameAsync(registerVM.Username) is not null)
             {
                 return View(registerVM);
+            }
+
+            if (registerVM.Password != registerVM.ConfirmPassword)
+            {
+                ModelState.AddModelError("PasswordConfirm", "The passwords don't match!");
+                return View();
             }
 
             var user = new User()
@@ -120,6 +127,42 @@ namespace PCShop.Controllers
             return View(userVM);
         }
 
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(RegisterVM userVM)
+        {
+            if (!ModelState.IsValid
+                 || await userManager.FindByNameAsync(userVM.Username) is not null)
+            {
+                return View();
+            }
+
+            var user = new User()
+            {
+                FirstName = userVM.FirstName,
+                LastName = userVM.LastName,
+                Email = userVM.Email,
+                UserName = userVM.Username,
+                RegisterDate = DateTime.UtcNow,
+                IsAdministrator = false,
+            };
+
+            var result = await userManager.CreateAsync(user, "employee123");
+
+            if (!result.Succeeded)
+            {
+                return View();
+            }
+
+            userManager.AddToRoleAsync(user, "Employee").Wait();
+
+            return RedirectToAction(nameof(AllEmployees));
+        }
+
         public IActionResult ChangePassword()
         {
             return View();
@@ -152,6 +195,86 @@ namespace PCShop.Controllers
             await signInManager.RefreshSignInAsync(user);
 
             return RedirectToAction(nameof(Profile));
+        }
+
+        public async Task<IActionResult> AllEmployees()
+        {
+            var users = await userManager.GetUsersInRoleAsync("employee");
+
+            return View(users.Select(x => new UserVM()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                Username = x.UserName,
+                Age = x.Age,
+                RegisterDate = x.RegisterDate,
+                PhoneNumber = x.PhoneNumber,
+                IsAdministrator = x.IsAdministrator,
+            }));
+        }
+
+        public async Task<IActionResult> AllClients()
+        {
+            var users = await userManager.GetUsersInRoleAsync("client");
+
+            return View(users.Select(x => new UserVM()
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                Username = x.UserName,
+                Age = x.Age,
+                RegisterDate = x.RegisterDate,
+                PhoneNumber = x.PhoneNumber,
+                IsAdministrator = x.IsAdministrator,
+            }));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Promote(string userId)
+        {
+            if (userId == null)
+            {
+                return RedirectToAction(nameof(AllEmployees));
+            }
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(AllEmployees));
+            }
+
+            user.IsAdministrator = true;
+            await userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(AllEmployees));
+        }
+        /// <summary>
+        /// Demote to employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> Demote(string userId)
+        {
+            if (userId == null)
+            {
+                return RedirectToAction(nameof(AllEmployees));
+            }
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(AllEmployees));
+            }
+
+            user.IsAdministrator = false;
+            await userManager.UpdateAsync(user);
+
+            return RedirectToAction(nameof(AllEmployees));
         }
     }
 }

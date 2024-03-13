@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PCShop.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PCShop.Entities
 {

@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<PCShop.Models.OrderVM>
-@{
-    ViewData["Title"] = "Orders";
-}
 
 <div class="d-lg-inline-block align-top col-3" id="filter-left">
     @await Html.PartialAsync("~/Views/Users/_ManageLayoutPartialView.cshtml")
 </div>
 <div class="d-lg-inline-block align-top col-md-8 m-auto">
-   
+    @if ((ViewData["Title"] as string) == "Orders")
+    {
+        @await Html.PartialAsync("~/Views/Users/_ControlPanelPartialView.cshtml")
+    }
+
     @if (Model.Count() == 0)
     {
         <h4>No Orders</h4>

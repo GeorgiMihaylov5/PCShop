@@ -87,11 +87,22 @@ namespace PCShop.Services
 
         public Product SetDiscount(string id, int percentage)
         {
-            var product = Get(id) ?? throw new InvalidOperationException();
+            var product = Get(id);
 
-            if (percentage < 0 || percentage > 100)
+            if (product is null)
             {
-                throw new InvalidOperationException("Wrong percentage bro");
+                return null;
+            }
+
+            if (product.Discount != 0)
+            {
+                product.Price += product.Discount;
+                percentage += (int)(product.Discount * 100 / product.Price);
+            }
+
+            if (percentage < 0 && percentage > 100)
+            {
+                throw new InvalidDataException("Percentage cannot be highter that 100!");
             }
 
             product.Discount = product.Price * percentage / 100;
@@ -114,6 +125,7 @@ namespace PCShop.Services
             product.Price = price;
             product.Image = image;
             product.Category = category;
+            product.Discount = 0;
 
             _context.Products.Update(product);
             _context.SaveChanges();

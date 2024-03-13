@@ -18,6 +18,8 @@ namespace PCShop.Controllers
 
         public IActionResult All()
         {
+            ViewData["Title"] = "Orders";
+
             var orders = orderService.GetOrders()
                 .Select(x => new OrderVM
                 {
@@ -61,6 +63,8 @@ namespace PCShop.Controllers
 
         public IActionResult My()
         {
+            ViewData["Title"] = "MyOrders";
+
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId is null)

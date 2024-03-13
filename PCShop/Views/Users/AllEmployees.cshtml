@@ -1,0 +1,88 @@
+﻿@model IEnumerable<PCShop.Models.UserVM>
+
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<div class="d-lg-inline-block align-top col-3" id="filter-left">
+    @await Html.PartialAsync("~/Views/Users/_ManageLayoutPartialView.cshtml")
+</div>
+<div class="d-lg-inline-block align-top col-md-8 m-auto">
+    @await Html.PartialAsync("~/Views/Users/_ControlPanelPartialView.cshtml")
+
+    <div class="alert alert-info" style="margin-top: 25px">
+        <h2 style="text-align: center">Employees - @Model.Count()</h2>
+    </div>
+    <p class="text-center">
+        <a asp-action="Create" class="btn btn-outline-dark">Create Employee</a>
+    </p>
+    <div class="table-responsive">
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Username)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FirstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Age)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RegisterDate)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(_ => item.IsAdministrator)
+                            @Html.DisplayFor(_ => item.Username)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => item.Age)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => item.RegisterDate)
+                        </td>
+                        <td style="padding: 7px">
+                            @if (!item.IsAdministrator && item.Username != "admin")
+                            {
+                                <form asp-action="Promote" asp-controller="Users" method="post">
+                                    <input type="hidden" name="userId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-success">Promote</button>
+                                </form>
+                            }
+                            else if (item.Username != "admin")
+                            {
+                                <form asp-action="Demote" asp-controller="Users" method="post">
+                                    <input type="hidden" name="userId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-danger">Demote</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

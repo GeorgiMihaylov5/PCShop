@@ -33,6 +33,27 @@ namespace PCShop.Controllers
 
             return View(products);
         }
+
+        public IActionResult AllTable()
+        {
+            var products = _productService.GetAll()
+                .Select(p => new ProductVM()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Model = p.Model,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Discount = p.Discount,
+                    AddedOn = p.AddedOn,
+                    Quantity = p.Quantity,
+                    Image = p.Image,
+                    Category = p.Category,
+                });
+
+            return View(products);
+        }
+
         [Route("[controller]/[action]/{category}")]
         public IActionResult AllByCategory(string category)
         {
@@ -103,6 +124,8 @@ namespace PCShop.Controllers
 
         public IActionResult Create()
         {
+            ViewData["Title"] = "Create";
+
             return View();
         }
 
@@ -122,11 +145,13 @@ namespace PCShop.Controllers
                 productVM.Image,
                 productVM.Category);
 
-            return View("Details", product);
+            return RedirectToAction(nameof(AllTable));
         }
 
         public IActionResult Edit(string id)
         {
+            ViewData["Title"] = "Edit";
+
             if (id is null)
             {
                 return BadRequest();
@@ -150,7 +175,7 @@ namespace PCShop.Controllers
                 });
         }
 
-        [HttpPut]
+        [HttpPost]
         public IActionResult Edit(ProductVM productVM)
         {
             if (productVM is null)
@@ -161,26 +186,39 @@ namespace PCShop.Controllers
             var product = _productService.Update(productVM.Id,
                 productVM.Name,
                 productVM.Description,
-            productVM.Model,
+                productVM.Model,
                 productVM.Quantity,
-            productVM.Price,
+                productVM.Price,
                 productVM.Image,
                 productVM.Category);
 
-            return View("Details", product);
+            return RedirectToAction(nameof(AllTable));
         }
 
-        [HttpDelete]
-        public IActionResult Delete(ProductVM productVM)
+        public IActionResult Delete(string id)
         {
-            if (productVM is null)
+            if (id is null)
             {
                 return BadRequest();
             }
 
-            _productService.Remove(productVM.Id);
+            _productService.Remove(id);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction(nameof(AllTable));
+        }
+
+        public IActionResult AddDiscount(string id)
+        {
+            _productService.SetDiscount(id, 5);
+
+            return RedirectToAction("AllTable");
+        }
+
+        public IActionResult RemoveDiscount(string id)
+        {
+            _productService.RemoveDiscount(id);
+
+            return RedirectToAction("AllTable");
         }
     }
 }

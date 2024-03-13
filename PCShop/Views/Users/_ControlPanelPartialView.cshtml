@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using PCShop.Entities;
+@inject UserManager<User> userManager
+
+@{
+    var user = await userManager.GetUserAsync(User);
+}
+
+<ul class="nav nav-tabs align-items-end" id="myTab" role="tablist" style="justify-content: space-around;">
+    <li class="nav-item">
+        <a class="panel nav-link" asp-action="All" asp-controller="Orders" role="tab" aria-controls="home" aria-selected="false">Orders</a>
+    </li>
+    <li class="nav-item">
+        <a class="panel nav-link" asp-action="AllClients" asp-controller="Users" role="tab" aria-controls="home" aria-selected="false">Clients</a>
+    </li>
+
+    @if (user.IsAdministrator)
+    {
+        <li class="nav-item">
+            <a class="panel nav-link" asp-action="AllEmployees" asp-controller="Users" role="tab" aria-controls="home" aria-selected="false">Employees</a>
+        </li>
+        <li class="nav-item">
+            <a class="panel nav-link" asp-action="AllTable" asp-controller="Products" role="tab" aria-controls="home" aria-selected="false">Products</a>
+        </li>
+    }
+</ul>
+
+<script>
+    let urlAdmin = window.location.pathname.split('/')
+    let btnsAdmin = document.getElementsByClassName("panel");
+
+    if (urlAdmin[urlAdmin.length - 2] == 'Orders' && urlAdmin[urlAdmin.length - 1] == 'All') {
+        btnsAdmin[0].className += " active";
+    }
+    else if (urlAdmin[urlAdmin.length - 2] == 'Orders' && urlAdmin[urlAdmin.length - 1] == 'Rejected') {
+        btnsAdmin[1].className += " active";
+    }
+
+    if (urlAdmin[urlAdmin.length - 2] == 'Employees' && urlAdmin[urlAdmin.length - 1] == 'All') {
+        btnsAdmin[2].className += " active";
+    }
+    else if (urlAdmin[urlAdmin.length - 2] == 'Clients' && urlAdmin[urlAdmin.length - 1] == 'All') {
+        btnsAdmin[3].className += " active";
+    }
+    else if (urlAdmin[urlAdmin.length - 2] == 'Products' && urlAdmin[urlAdmin.length - 1] == 'AllTable') {
+        btnsAdmin[4].className += " active";
+    }
+</script>

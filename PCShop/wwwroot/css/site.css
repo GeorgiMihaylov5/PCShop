@@ -17,6 +17,10 @@ body {
   margin-bottom: 60px;
 }
 
+.mt {
+    margin-top: 10px;
+}
+
 /*-------Contacts-------*/
 .rounded-2 {
     border-radius: 2.25rem !important;
