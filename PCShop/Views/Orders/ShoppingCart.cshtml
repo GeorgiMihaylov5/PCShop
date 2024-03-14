@@ -1,0 +1,97 @@
+﻿<div class="card">
+    <div class="row">
+        <div class="col-md-8 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col"><h4><b>Shopping Cart</b></h4></div>
+                    <div class="col align-self-center text-right text-muted count-div">0 items</div>
+                </div>
+            </div>
+
+            <div id="ordered-items">
+            </div>
+        </div>
+        <div class="col-md-4 summary">
+            <div><h5><b>Summary</b></h5></div>
+            <hr>
+            <div class="row">
+                <div class="col count-div" style="padding-left:0;">ITEMS 0</div>
+            </div>
+            <div class="d-flex flex-nowrap align-items-center justify-content-between" style="margin: 15px 0;">
+                <div>ADDRESS</div>
+                <input type="text" id="address" class="form-control w-75" style="height: 40px;" />
+            </div>
+            <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                <div class="col">TOTAL PRICE</div>
+                <div class="col text-right" id="total-price">0 BGN</div>
+            </div>
+            <button class="btn btn-outline-primary" onclick="checkout()">CHECKOUT</button>
+        </div>
+    </div>
+
+</div>
+
+
+<template id="ordered-item">
+    <div class="item">
+        <div class="row">
+            <div class="row main align-items-center">
+                <div class="col-2"><img class="img-fluid js-fill" src=""></div>
+                <div class="col">
+                    <div class="row text-muted js-fill">Name</div>
+                    <div class="row js-fill">Model</div>
+                </div>
+                <div class="col"><span class="js-fill" style="white-space: pre;">Price and Quantity</span></div>
+                <div class="col">
+                    <a class="link-danger" onclick="removeTemplate(event)" style="cursor: pointer;">Remove</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fill(orderViewModel.getBasket())
+    });
+
+
+
+    async function checkout() {
+        let basket = orderViewModel.getBasket();
+
+        if (!basket) {
+            return;
+        }
+
+        await fetch('https://localhost:7296/Orders/CreateOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Id: "da",
+                Address: document.getElementById('address').value,
+                OrderedProducts: basket
+            })
+        }).then((response) => {
+            if (response.status === 400) {
+                alert('Not enough quantity!')
+            }
+            else if (response.status === 200) {
+                orderViewModel.cleanBasket()
+                fill(orderViewModel.getBasket())
+            }
+        }).catch(err => {
+            alert(err)
+        })
+    }
+
+    function removeTemplate(el) {
+        let template = el.target.closest(".item");
+        const index = Array.from(template.parentElement.children).indexOf(template);
+
+        orderViewModel.removeFromBasket(index);
+        fill(orderViewModel.getBasket())
+    }
+</script>

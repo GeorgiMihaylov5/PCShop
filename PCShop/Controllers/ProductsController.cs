@@ -34,6 +34,7 @@ namespace PCShop.Controllers
             return View(products);
         }
 
+        [Authorize("Employee")]
         public IActionResult AllTable()
         {
             var products = _productService.GetAll()
@@ -75,7 +76,6 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
 
-        [Authorize]
         public IActionResult AllDiscounts()
         {
             var products = _productService.GetAll()
@@ -97,7 +97,6 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
         
-
         public IActionResult Details(string id)
         {
             if (id is null)
@@ -122,6 +121,7 @@ namespace PCShop.Controllers
                 });
         }
 
+        [Authorize("Employee")]
         public IActionResult Create()
         {
             ViewData["Title"] = "Create";
@@ -129,6 +129,7 @@ namespace PCShop.Controllers
             return View();
         }
 
+        [Authorize("Employee")]
         [HttpPost]
         public IActionResult Create(ProductVM productVM)
         {
@@ -148,6 +149,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+        [Authorize("Employee")]
         public IActionResult Edit(string id)
         {
             ViewData["Title"] = "Edit";
@@ -175,6 +177,7 @@ namespace PCShop.Controllers
                 });
         }
 
+        [Authorize("Employee")]
         [HttpPost]
         public IActionResult Edit(ProductVM productVM)
         {
@@ -195,6 +198,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+        [Authorize("Employee")]
         public IActionResult Delete(string id)
         {
             if (id is null)
@@ -207,6 +211,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+        [Authorize("Employee")]
         public IActionResult AddDiscount(string id)
         {
             _productService.SetDiscount(id, 5);
@@ -214,6 +219,7 @@ namespace PCShop.Controllers
             return RedirectToAction("AllTable");
         }
 
+        [Authorize("Employee")]
         public IActionResult RemoveDiscount(string id)
         {
             _productService.RemoveDiscount(id);

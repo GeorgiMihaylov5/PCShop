@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PCShop.Abstraction;
 using PCShop.Entities;
 using PCShop.Entities.Enums;
@@ -10,12 +12,15 @@ namespace PCShop.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderService orderService;
+        private readonly UserManager<User> userManager;
 
-        public OrdersController(IOrderService _orderService)
+        public OrdersController(IOrderService _orderService, UserManager<User> userManager)
         {
             orderService = _orderService;
+            this.userManager = userManager;
         }
 
+        [Authorize("Employee")]
         public IActionResult All()
         {
             ViewData["Title"] = "Orders";
@@ -26,7 +31,7 @@ namespace PCShop.Controllers
                     Id = x.Id,
                     OrderedOn = x.OrderedOn,
                     Status = x.Status,
-                    Adress = x.Adress,
+                    Address = x.Adress,
                     TotalPrice = x.TotalPrice,
                     OrderedProducts = x.OrderedProducts.Select(op => new OrderedProductVM()
                     {
@@ -61,6 +66,7 @@ namespace PCShop.Controllers
             return View(orders);
         }
 
+        [Authorize]
         public IActionResult My()
         {
             ViewData["Title"] = "MyOrders";
@@ -78,7 +84,7 @@ namespace PCShop.Controllers
                     Id = x.Id,
                     OrderedOn = x.OrderedOn,
                     Status = x.Status,
-                    Adress = x.Adress,
+                    Address = x.Adress,
                     TotalPrice = x.TotalPrice,
                     OrderedProducts = x.OrderedProducts.Select(op => new OrderedProductVM()
                     {
@@ -113,13 +119,16 @@ namespace PCShop.Controllers
             return View(nameof(All), orders);
         }
 
+        [Authorize]
         [HttpPost]
-        public IActionResult CreateOrder(OrderVM orderVM)
+        public async Task<IActionResult> CreateOrderAsync([FromBody] OrderVM orderVM)
         {
+            var user = await userManager.GetUserAsync(User);
+
             try
             {
-                var order = orderService.CreateOrder(orderVM.User.Id,orderVM.Adress, orderVM.OrderedProducts.Select(x => new OrderedProduct() 
-                { 
+                var order = orderService.CreateOrder(user.Id, orderVM.Address, orderVM.OrderedProducts.Select(x => new OrderedProduct()
+                {
                     Id = x.Id,
                     DiscountApplied = x.DiscountApplied,
                     Count = x.Count,
@@ -137,7 +146,8 @@ namespace PCShop.Controllers
             }
         }
 
-        [HttpPut]
+        [Authorize("Employee")]
+        [HttpPost]
         public IActionResult EditStatus(OrderVM orderVM)
         {
             try
@@ -146,7 +156,7 @@ namespace PCShop.Controllers
 
                 if (order is not null)
                 {
-                    return Ok();
+                    return RedirectToAction(nameof(All));
                 }
 
                 return BadRequest("Order cannot be edited!");
@@ -155,6 +165,11 @@ namespace PCShop.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        public IActionResult ShoppingCart()
+        {
+            return View();
         }
     }
 }

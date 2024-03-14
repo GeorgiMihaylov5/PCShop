@@ -23,13 +23,23 @@ namespace PCShop.Services
                 Adress = address,
                 OrderedOn = DateTime.UtcNow,
                 Status = OrderStatus.Pending,
-                TotalPrice = orderedProducts.Sum(p => p.Price)
+                TotalPrice = orderedProducts.Sum(p => p.Price * p.Count)
             };
 
             _context.Orders.Add(order);
 
+            var products = _context.Products.ToList();
+
             foreach (var item in orderedProducts)
             {
+                var product = products.First(x => x.Id == item.ProductId);
+                product.Quantity -= item.Count;
+
+                if (product.Quantity < 0)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 var orderedProduct = new OrderedProduct
                 {
                     DiscountApplied = item.DiscountApplied,
@@ -42,6 +52,7 @@ namespace PCShop.Services
                 _context.OrderedProducts.Add(orderedProduct);
             }
 
+            _context.Products.UpdateRange(products);
             _context.SaveChanges();
             return order;
         }
@@ -67,7 +78,9 @@ namespace PCShop.Services
 
             return _context.Orders
                 .Where(_context => _context.UserId == userId)
+                .Include(x => x.User)
                 .Include(x => x.OrderedProducts)
+                .ThenInclude(d => d.Product)
                 .ToList();
         }
 
@@ -79,14 +92,18 @@ namespace PCShop.Services
             }
 
             return _context.Orders
+                .Include(x => x.User)
                 .Include(x => x.OrderedProducts)
+                .ThenInclude(d => d.Product)
                 .FirstOrDefault(x => x.Id == id);
         }
 
         public ICollection<Order> GetOrders()
         {
             return _context.Orders
+                .Include(x => x.User)
                 .Include(x => x.OrderedProducts)
+                .ThenInclude(d => d.Product)
                 .ToList();
         }
     }

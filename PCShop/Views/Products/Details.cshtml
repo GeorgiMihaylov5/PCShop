@@ -1,4 +1,5 @@
-﻿@model PCShop.Models.ProductVM
+﻿@using System.Text.Json;
+@model PCShop.Models.ProductVM
 
 @{
     ViewData["Title"] = "Details";
@@ -42,9 +43,14 @@
         <div class="d-flex align-items-center justify-content-center">
             <label class="font-weight-bold text-left mr-1">Quantity:</label>
             <div style="margin: 0 10px">
-                <input class="form-control text-center m-auto" type="number">
+                <input class="form-control text-center m-auto" type="number" min="1" max="@Model.Quantity" value="1" id="count" onChange="CalculatePrice()" />
             </div>
-            <button class="btn btn-danger" (click)="makeOrder()">Order</button>
+            <button class="btn btn-danger" onclick='orderViewModel.addToBasket({
+                Product: @Html.Raw(Json.Serialize(Model)),
+                Price: @Model.Price,
+                DiscountApplied: @Model.Discount === 0 ? false : true,
+                Count: document.getElementById(`count`).value
+            })'>Order</button>
         </div>
     </div>
 
@@ -55,7 +61,7 @@
                 @foreach (var item in Model.Description.Split(','))
                 {
                     <tr>
-                       @{
+                        @{
                             try
                             {
                                 var line = item.Split(':');
@@ -74,17 +80,16 @@
                                 </td>
                             }
                         }
-                </tr>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
 <script>
-    function CalculatePrice(){
-        let quantity = parseFloat(document.getElementById('productQuantity').value)
-        let pricePerProduct =  parseFloat(document.getElementById('pricePerProduct').textContent)
+    function CalculatePrice() {
+        let quantity = parseFloat(document.getElementById('count').value)
+        let pricePerProduct = parseFloat(document.getElementById('pricePerProduct').textContent)
         document.getElementById('totalPrice').textContent = (quantity * pricePerProduct).toFixed(2)
     }
-    document.getElementById('productQuantity').max = @Html.Raw(Json.Serialize(Model.Quantity));
 </script>

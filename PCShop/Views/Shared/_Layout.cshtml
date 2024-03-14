@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PCShop.styles.css" asp-append-version="true" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -85,6 +86,9 @@
                                 <a class="nav-link text-dark" asp-action="Login" asp-controller="Users">Login</a>
                             </li>
                         }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-action="ShoppingCart" asp-controller="Orders"><i class="bi bi-cart-check-fill" id="basket"></i></a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -104,7 +108,6 @@
     <script src="https://kit.fontawesome.com/2ca93d86e5.js" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

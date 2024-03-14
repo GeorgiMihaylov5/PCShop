@@ -1,5 +1,4 @@
-﻿using PCShop.Entities;
-using PCShop.Entities.Enums;
+﻿using PCShop.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace PCShop.Models
@@ -15,7 +14,7 @@ namespace PCShop.Models
         public OrderStatus Status { get; set; }
 
         [MaxLength(100)]
-        public string Adress { get; set; }
+        public string Address { get; set; }
 
         public decimal TotalPrice { get; set; }
 
