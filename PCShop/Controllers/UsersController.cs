@@ -137,7 +137,7 @@ namespace PCShop.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateEmployeeVM userVM)
         {
@@ -206,7 +206,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(Profile));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllEmployees()
         {
             var users = await userManager.GetUsersInRoleAsync("employee");
@@ -225,7 +225,7 @@ namespace PCShop.Controllers
             }));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee,Admin")]
         public async Task<IActionResult> AllClients()
         {
             var users = await userManager.GetUsersInRoleAsync("client");
@@ -244,7 +244,7 @@ namespace PCShop.Controllers
             }));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Promote(string userId)
         {
@@ -254,18 +254,19 @@ namespace PCShop.Controllers
             }
             var user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
+            if (user == null || await userManager.IsInRoleAsync(user, "Admin"))
             {
                 return RedirectToAction(nameof(AllEmployees));
             }
 
             user.IsAdministrator = true;
             await userManager.UpdateAsync(user);
+            await userManager.AddToRoleAsync(user, "Admin");
 
             return RedirectToAction(nameof(AllEmployees));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Demote(string userId)
         {
@@ -275,13 +276,14 @@ namespace PCShop.Controllers
             }
             var user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
+            if (user == null || !await userManager.IsInRoleAsync(user, "Admin"))
             {
                 return RedirectToAction(nameof(AllEmployees));
             }
 
             user.IsAdministrator = false;
             await userManager.UpdateAsync(user);
+            await userManager.RemoveFromRoleAsync(user, "Admin");
 
             return RedirectToAction(nameof(AllEmployees));
         }

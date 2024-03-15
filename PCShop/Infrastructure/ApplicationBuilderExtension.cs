@@ -22,7 +22,7 @@ namespace PCShop.Infrastructure
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            string[] roleNames = { "Client", "Employee" };
+            string[] roleNames = { "Client", "Employee", "Admin" };
 
             IdentityResult roleResult;
 
@@ -57,7 +57,7 @@ namespace PCShop.Infrastructure
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, "Employee").Wait();
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
                 }
             }
         }

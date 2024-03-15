@@ -14,7 +14,7 @@
         <a class="panel nav-link" asp-action="AllClients" asp-controller="Users" role="tab" aria-controls="home" aria-selected="false">Clients</a>
     </li>
 
-    @if (user.IsAdministrator)
+    @if (user.IsAdministrator && User.IsInRole("Admin"))
     {
         <li class="nav-item">
             <a class="panel nav-link" asp-action="AllEmployees" asp-controller="Users" role="tab" aria-controls="home" aria-selected="false">Employees</a>
