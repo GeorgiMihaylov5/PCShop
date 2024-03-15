@@ -43,7 +43,7 @@ namespace PCShop.Controllers
             return Search(filter, minPrice,maxPrice, name, model, oldProducts);
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AllTable()
         {
             var products = _productService.GetAll()
@@ -149,7 +149,7 @@ namespace PCShop.Controllers
                 });
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             ViewData["Title"] = "Create";
@@ -157,7 +157,7 @@ namespace PCShop.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Create(ProductVM productVM)
         {
@@ -177,7 +177,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(string id)
         {
             ViewData["Title"] = "Edit";
@@ -205,7 +205,7 @@ namespace PCShop.Controllers
                 });
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Edit(ProductVM productVM)
         {
@@ -226,7 +226,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(string id)
         {
             if (id is null)
@@ -239,7 +239,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddDiscount(string id)
         {
             _productService.SetDiscount(id, 5);
@@ -247,7 +247,7 @@ namespace PCShop.Controllers
             return RedirectToAction("AllTable");
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Admin")]
         public IActionResult RemoveDiscount(string id)
         {
             _productService.RemoveDiscount(id);

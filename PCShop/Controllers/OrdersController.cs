@@ -21,7 +21,7 @@ namespace PCShop.Controllers
             this.userManager = userManager;
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee,Admin")]
         public IActionResult All()
         {
             ViewData["Title"] = "Orders";
@@ -62,7 +62,9 @@ namespace PCShop.Controllers
 
                 }).OrderByDescending(x => x.Status == OrderStatus.Pending)
                 .ThenByDescending(x => x.Status == OrderStatus.Approved)
-                .ThenByDescending(x => x.Status == OrderStatus.Completed).ToList();
+                .ThenByDescending(x => x.Status == OrderStatus.Completed)
+                .OrderByDescending(x => x.OrderedOn)
+                .ToList();
 
             return View(orders);
         }
@@ -115,7 +117,9 @@ namespace PCShop.Controllers
 
                 }).OrderByDescending(x => x.Status == OrderStatus.Pending)
                 .ThenByDescending(x => x.Status == OrderStatus.Approved)
-                .ThenByDescending(x => x.Status == OrderStatus.Completed).ToList();
+                .ThenByDescending(x => x.Status == OrderStatus.Completed)
+                .OrderByDescending(x => x.OrderedOn)
+                .ToList();
 
             return View(nameof(All), orders);
         }
@@ -147,7 +151,7 @@ namespace PCShop.Controllers
             }
         }
 
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public IActionResult EditStatus(OrderVM orderVM)
         {
