@@ -15,12 +15,22 @@ namespace PCShop.Controllers
         private readonly IOrderService orderService;
         private readonly UserManager<User> userManager;
 
+        /// <summary>
+        /// Initialize IOrderService and userManager
+        /// </summary>
+        /// <param name="_orderService"></param>
+        /// <param name="userManager"></param>
         public OrdersController(IOrderService _orderService, UserManager<User> userManager)
         {
             orderService = _orderService;
             this.userManager = userManager;
         }
 
+
+        /// <summary>
+        /// Get all orders
+        /// </summary>
+        /// <returns>Return the view with model of OrderVM list</returns>
         [Authorize(Roles = "Employee,Admin")]
         public IActionResult All()
         {
@@ -69,6 +79,11 @@ namespace PCShop.Controllers
             return View(orders);
         }
 
+
+        /// <summary>
+        /// Get my orders
+        /// </summary>
+        /// <returns>Return the view with model of OrderVM list</returns>
         [Authorize]
         public IActionResult My()
         {
@@ -124,6 +139,11 @@ namespace PCShop.Controllers
             return View(nameof(All), orders);
         }
 
+        /// <summary>
+        /// Creates a new order
+        /// </summary>
+        /// <param name="orderVM"></param>
+        /// <returns>Success: Redirect to my orders page, Failed: return BadRequest</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateOrderAsync([FromBody] OrderVM orderVM)
@@ -151,6 +171,11 @@ namespace PCShop.Controllers
             }
         }
 
+        /// <summary>
+        /// Edit the status of the order
+        /// </summary>
+        /// <param name="orderVM"></param>
+        /// <returns>Success: Redirect to all orders page, Failed: return BadRequest</returns>
         [Authorize(Roles = "Employee,Admin")]
         [HttpPost]
         public IActionResult EditStatus(OrderVM orderVM)
@@ -172,6 +197,10 @@ namespace PCShop.Controllers
             }
         }
 
+        /// <summary>
+        /// Shopping cart page
+        /// </summary>
+        /// <returns>The view of shopping cart page</returns>
         public IActionResult ShoppingCart()
         {
             return View();

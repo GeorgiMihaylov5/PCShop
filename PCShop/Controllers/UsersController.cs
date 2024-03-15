@@ -11,22 +11,40 @@ namespace PCShop.Controllers
         private readonly SignInManager<User> signInManager;
         private readonly UserManager<User> userManager;
 
+        /// <summary>
+        /// Initialize SignInManager and UserManager
+        /// </summary>
+        /// <param name="signInManager"></param>
+        /// <param name="userManager"></param>
         public UsersController(SignInManager<User> signInManager, UserManager<User> userManager)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
         }
 
+        /// <summary>
+        /// Register page
+        /// </summary>
+        /// <returns>Return register page</returns>
         public IActionResult Register()
         {
             return View();
         }
 
+        /// <summary>
+        /// Login page
+        /// </summary>
+        /// <returns>Return login page</returns>
         public IActionResult Login()
         {
             return View();
         }
 
+        /// <summary>
+        /// User login
+        /// </summary>
+        /// <param name="loginVM"></param>
+        /// <returns>Success: Redirect to all products action, Failed: return View</returns>
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
@@ -44,6 +62,11 @@ namespace PCShop.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Register user
+        /// </summary>
+        /// <param name="registerVM"></param>
+        /// <returns>Success: Redirect to all products action, Failed: return View</returns>
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
@@ -83,6 +106,10 @@ namespace PCShop.Controllers
             return RedirectToAction("All", "Products");
         }
 
+        /// <summary>
+        /// Logout
+        /// </summary>
+        /// <returns>Return home page</returns>
         [Authorize]
         public async Task<IActionResult> Logout()
         {
@@ -91,6 +118,10 @@ namespace PCShop.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// Profile page
+        /// </summary>
+        /// <returns>Return profile page with model of userVM</returns>
         [Authorize]
         public async Task<IActionResult> Profile()
         {
@@ -109,6 +140,11 @@ namespace PCShop.Controllers
             });
         }
 
+        /// <summary>
+        /// Edit my user data
+        /// </summary>
+        /// <param name="userVM"></param>
+        /// <returns>Success: Return profile page, Failed: redirect to logout</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Profile(UserVM userVM)
@@ -131,12 +167,21 @@ namespace PCShop.Controllers
             return View(userVM);
         }
 
+        /// <summary>
+        /// Create employee page
+        /// </summary>
+        /// <returns>Return create employee page</returns>
         [Authorize(Roles = "Employee")]
         public IActionResult Create()
         {
             return View();
         }
 
+        /// <summary>
+        /// Create employee
+        /// </summary>
+        /// <param name="userVM"></param>
+        /// <returns>Success: redirect to AllEmployees, Failed: return View</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateEmployeeVM userVM)
@@ -169,12 +214,21 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllEmployees));
         }
 
+        /// <summary>
+        /// Change password page
+        /// </summary>
+        /// <returns>Return change password page</returns>
         [Authorize]
         public IActionResult ChangePassword()
         {
             return View();
         }
 
+        /// <summary>
+        /// Change password
+        /// </summary>
+        /// <param name="changePasswordVM"></param>
+        /// <returns>Success: redirect to profile, Failed: return View or NotFound</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordVM changePasswordVM)
@@ -206,6 +260,10 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(Profile));
         }
 
+        /// <summary>
+        /// Get all employees
+        /// </summary>
+        /// <returns>Return all employees page</returns>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AllEmployees()
         {
@@ -225,6 +283,10 @@ namespace PCShop.Controllers
             }));
         }
 
+        /// <summary>
+        /// Get all clients
+        /// </summary>
+        /// <returns>return all clients page</returns>
         [Authorize(Roles = "Employee,Admin")]
         public async Task<IActionResult> AllClients()
         {
@@ -244,6 +306,11 @@ namespace PCShop.Controllers
             }));
         }
 
+        /// <summary>
+        /// Promote the employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Redirect to all employees</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Promote(string userId)
@@ -266,6 +333,11 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllEmployees));
         }
 
+        /// <summary>
+        /// Demote the employee
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Redirect to all employees</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Demote(string userId)

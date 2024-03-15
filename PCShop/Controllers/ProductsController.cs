@@ -10,11 +10,19 @@ namespace PCShop.Controllers
     {
         private readonly IProductService _productService;
 
+        /// <summary>
+        /// Initialize IProductService
+        /// </summary>
+        /// <param name="productService"></param>
         public ProductsController(IProductService productService)
         {
             _productService = productService;
         }
 
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns>Return all products as list of ProductVM</returns>
         public IActionResult All()
         {
             var products = _productService.GetAll()
@@ -35,6 +43,15 @@ namespace PCShop.Controllers
             return View(products);
         }
 
+        /// <summary>
+        /// Search in all products page
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="minPrice"></param>
+        /// <param name="maxPrice"></param>
+        /// <param name="name"></param>
+        /// <param name="model"></param>
+        /// <returns>Return filtered list of ProductVM</returns>
         [HttpPost]
         public IActionResult All(string filter, int minPrice, int maxPrice, string name, string model)
         {
@@ -43,6 +60,10 @@ namespace PCShop.Controllers
             return Search(filter, minPrice,maxPrice, name, model, oldProducts);
         }
 
+        /// <summary>
+        /// Get all products
+        /// </summary>
+        /// <returns>Return the products in page that has a table view</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult AllTable()
         {
@@ -64,6 +85,11 @@ namespace PCShop.Controllers
             return View(products);
         }
 
+        /// <summary>
+        /// Get all products by category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>Return products as list of ProductVM</returns>
         [Route("[controller]/[action]/{category}")]
         public IActionResult AllByCategory(string category)
         {
@@ -85,6 +111,16 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
 
+        /// <summary>
+        /// Search in some category products page
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="filter"></param>
+        /// <param name="minPrice"></param>
+        /// <param name="maxPrice"></param>
+        /// <param name="name"></param>
+        /// <param name="model"></param>
+        /// <returns>Return filtered products</returns>
         [HttpPost]
         [Route("[controller]/[action]/{category}")]
         public IActionResult AllByCategory(string category, string filter, int minPrice, int maxPrice, string name, string model)
@@ -94,6 +130,10 @@ namespace PCShop.Controllers
            return Search(filter, minPrice, maxPrice, name, model, oldProducts);
         }
 
+        /// <summary>
+        /// Get all products with discount
+        /// </summary>
+        /// <returns>Return list of ProductVM with discount</returns>
         public IActionResult AllDiscounts()
         {
             var products = _productService.GetAll()
@@ -115,6 +155,15 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
 
+        /// <summary>
+        /// Search in discount page
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="minPrice"></param>
+        /// <param name="maxPrice"></param>
+        /// <param name="name"></param>
+        /// <param name="model"></param>
+        /// <returns>Return filtered products with discount</returns>
         [HttpPost]
         public IActionResult AllDiscounts(string filter, int minPrice, int maxPrice, string name, string model)
         {
@@ -125,6 +174,11 @@ namespace PCShop.Controllers
            return Search(filter, minPrice, maxPrice, name, model, oldProducts);
         }
 
+        /// <summary>
+        /// Get the product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Success: Return product details page with model of ProductVM, Failed: return BadRequest</returns>
         public IActionResult Details(string id)
         {
             if (id is null)
@@ -132,7 +186,12 @@ namespace PCShop.Controllers
                 return BadRequest();
             }
 
-            var product = _productService.Get(id) ?? throw new ArgumentException();
+            var product = _productService.Get(id);
+
+            if (product is null)
+            {
+                return BadRequest();
+            }
 
             return View(new ProductVM()
                 {
@@ -149,6 +208,10 @@ namespace PCShop.Controllers
                 });
         }
 
+        /// <summary>
+        /// Create product page
+        /// </summary>
+        /// <returns>Return product page</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -157,6 +220,11 @@ namespace PCShop.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Create product
+        /// </summary>
+        /// <param name="productVM"></param>
+        /// <returns>Success: Redirect to AllTable, Failed: return BadRequest</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Create(ProductVM productVM)
@@ -177,6 +245,12 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+
+        /// <summary>
+        /// Edit product page
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Success: return edit page with product model, Failed: return BadRequest</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult Edit(string id)
         {
@@ -205,6 +279,11 @@ namespace PCShop.Controllers
                 });
         }
 
+        /// <summary>
+        /// Edit product
+        /// </summary>
+        /// <param name="productVM"></param>
+        /// <returns>Success: Redirect to AllTable, Failed: return BadRequest</returns>
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Edit(ProductVM productVM)
@@ -226,6 +305,11 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+        /// <summary>
+        /// Delete product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Success: Redirect to AllTable, Failed: return BadRequest</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult Delete(string id)
         {
@@ -239,6 +323,11 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
+        /// <summary>
+        /// Add 5% discount on product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Redirect to AllTable</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult AddDiscount(string id)
         {
@@ -247,6 +336,11 @@ namespace PCShop.Controllers
             return RedirectToAction("AllTable");
         }
 
+        /// <summary>
+        /// Remove product discount
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Redirect to AllTable</returns>
         [Authorize(Roles = "Admin")]
         public IActionResult RemoveDiscount(string id)
         {
