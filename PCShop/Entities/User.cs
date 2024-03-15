@@ -19,6 +19,5 @@ namespace PCShop.Entities
 
         public ICollection<Order> Orders { get; set; }
         public bool IsAdministrator { get; set; }
-        //TODO
     }
 }

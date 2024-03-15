@@ -27,7 +27,11 @@ namespace PCShop.Abstraction
             string image,
             Category category);
 
-        public ICollection<Product> Search(string filter, int minPrice, int maxPrice, string name, string model, IEnumerable<Product> oldProducts);
-        //public ICollection<Product> GetBestSellers();
+        public ICollection<Product> Search(string filter, 
+            int minPrice, 
+            int maxPrice, 
+            string name, 
+            string model, 
+            IEnumerable<Product> oldProducts);
     }
 }
