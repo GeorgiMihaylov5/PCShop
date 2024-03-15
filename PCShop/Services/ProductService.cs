@@ -2,6 +2,7 @@
 using PCShop.Data;
 using PCShop.Entities;
 using PCShop.Entities.Enums;
+using PCShop.Exceptions;
 
 namespace PCShop.Services
 {
@@ -39,7 +40,7 @@ namespace PCShop.Services
         {
             if (id is null)
             {
-                throw new ArgumentNullException("Invalid ID: ID cannot be null");
+                throw new ArgumentNullException("User id is null!");
             }
 
             return _context.Products
@@ -63,7 +64,7 @@ namespace PCShop.Services
 
         public Product Remove(string id)
         {
-            var product = Get(id) ?? throw new InvalidOperationException();
+            var product = Get(id) ?? throw new ProductNotFoundException();
 
             product.IsDeleted = true;
             _context.Products.Update(product);
@@ -74,7 +75,7 @@ namespace PCShop.Services
 
         public Product RemoveDiscount(string id)
         {
-            var product = Get(id) ?? throw new InvalidOperationException();
+            var product = Get(id) ?? throw new ProductNotFoundException();
 
             product.Price += product.Discount;
             product.Discount = 0;
@@ -87,12 +88,7 @@ namespace PCShop.Services
 
         public Product SetDiscount(string id, int percentage)
         {
-            var product = Get(id);
-
-            if (product is null)
-            {
-                return null;
-            }
+            var product = Get(id) ?? throw new ProductNotFoundException();
 
             if (product.Discount != 0)
             {
@@ -102,7 +98,7 @@ namespace PCShop.Services
 
             if (percentage < 0 && percentage > 100)
             {
-                throw new InvalidDataException("Percentage cannot be highter that 100!");
+                throw new InvalidDiscountException();
             }
 
             product.Discount = product.Price * percentage / 100;
@@ -116,7 +112,7 @@ namespace PCShop.Services
 
         public Product Update(string id, string name, string description, string model, int quantity, decimal price, string image, Category category)
         {
-            var product = Get(id) ?? throw new InvalidOperationException();
+            var product = Get(id) ?? throw new ProductNotFoundException();
 
             product.Name = name;
             product.Description = description;

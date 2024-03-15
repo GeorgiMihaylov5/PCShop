@@ -139,7 +139,7 @@ namespace PCShop.Controllers
 
         [Authorize(Roles = "Employee")]
         [HttpPost]
-        public async Task<IActionResult> Create(RegisterVM userVM)
+        public async Task<IActionResult> Create(CreateEmployeeVM userVM)
         {
             if (!ModelState.IsValid
                  || await userManager.FindByNameAsync(userVM.Username) is not null)

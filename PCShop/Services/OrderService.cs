@@ -3,6 +3,7 @@ using PCShop.Abstraction;
 using PCShop.Data;
 using PCShop.Entities;
 using PCShop.Entities.Enums;
+using PCShop.Exceptions;
 
 namespace PCShop.Services
 {
@@ -37,7 +38,7 @@ namespace PCShop.Services
 
                 if (product.Quantity < 0)
                 {
-                    throw new InvalidOperationException();
+                    throw new NegativeQuantityException();
                 }
 
                 var orderedProduct = new OrderedProduct
@@ -59,7 +60,7 @@ namespace PCShop.Services
 
         public Order ChangeStatus(string id, OrderStatus status)
         {
-            var order = GetOrder(id) ?? throw new InvalidOperationException();
+            var order = GetOrder(id) ?? throw new OrderNotFoundException();
 
             order.Status = status;
 
@@ -73,7 +74,7 @@ namespace PCShop.Services
         {
             if (userId is null)
             {
-                throw new ArgumentNullException("Invalid user ID: ID cannot be null");
+                throw new ArgumentNullException("User id is null!");
             }
 
             return _context.Orders
@@ -88,7 +89,7 @@ namespace PCShop.Services
         {
             if (id is null)
             {
-                throw new ArgumentNullException("Invalid order ID: ID cannot be null");
+                throw new ArgumentNullException("User id is null!");
             }
 
             return _context.Orders
