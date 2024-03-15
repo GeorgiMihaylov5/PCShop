@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using PCShop.Abstraction;
 using PCShop.Data;
-using PCShop.Options;
-using System.Text;
+using PCShop.Entities;
+using PCShop.Infrastructure;
+using PCShop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,30 +14,59 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlServer( builder.Configuration.GetConnectionString("DefaultConnection")));
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+options.UseSqlServer(
+    builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.Configure<JWTServiceOption>(options =>
+builder.Services.AddDefaultIdentity<User>()
+                  .AddRoles<IdentityRole>()
+                  .AddEntityFrameworkStores<AppDbContext>()
+                  .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.JwtKey = builder.Configuration["JWT:Key"];
-    options.Issuer = builder.Configuration["JWT:Issuer"];
-    options.ExpiresDays = int.Parse(builder.Configuration["JWT:ExpiresDays"]);
+    options.LoginPath = "/Users/Login";
+    options.LogoutPath = "/Users/Logout";
+
+    options.Events = new CookieAuthenticationEvents()
+    {
+        OnRedirectToLogin = redirectContext =>
+        {
+            string redirectUri = redirectContext.RedirectUri;
+
+            UriHelper.FromAbsolute(
+                redirectUri,
+                out string scheme,
+                out HostString host,
+                out PathString path,
+                out QueryString query,
+                out FragmentString fragment);
+
+            redirectUri = UriHelper.BuildAbsolute(scheme, host, path);
+
+            redirectContext.Response.Redirect(redirectUri);
+
+            return Task.CompletedTask;
+        }
+    };
 });
 
-builder.Services.AddAuthentication()
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
-            ValidIssuer = builder.Configuration["JWT:Issuer"],
-            ValidateIssuer = true,
-            ValidateAudience = true
-        };
-    });
+
+builder.Services.Configure<IdentityOptions>(option =>
+{
+    option.SignIn.RequireConfirmedEmail = false;
+    option.Password.RequireDigit = false;
+    option.Password.RequiredLength = 5;
+    option.Password.RequireLowercase = false;
+    option.Password.RequireNonAlphanumeric = false;
+    option.Password.RequireUppercase = false;
+    option.Password.RequiredUniqueChars = 0;
+});
 
 var app = builder.Build();
+app.PrepareDatabase().Wait();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -49,6 +81,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

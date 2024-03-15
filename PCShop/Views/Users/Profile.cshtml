@@ -1,0 +1,71 @@
+﻿@model PCShop.Models.UserVM
+
+@{
+    ViewData["Title"] = "Profile";
+}
+<div>
+    <div class="d-lg-inline-block align-top col-3" id="filter-left">
+        @await Html.PartialAsync("~/Views/Users/_ManageLayoutPartialView.cshtml")
+    </div>
+    <div class="d-lg-inline-block align-top col-8 m-auto" id="products">
+        <div class="col-6 m-auto  m-lg-0">
+            <form asp-action="Profile" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="Username" class="control-label"></label>
+                    <input asp-for="Username" class="form-control" readonly />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" readonly />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Age" class="control-label"></label>
+                    <input asp-for="Age" class="form-control" />
+                    <span asp-validation-for="Age" class="text-danger"></span>
+                    </div>
+                <div class="form-group">
+                    <label asp-for="RegisterDate" class="control-label"></label>
+                    <input type="text" class="form-control" value="@Model.RegisterDate.ToString("dddd, dd MMMM yyyy")" readonly />
+                    <span asp-validation-for="RegisterDate" class="text-danger"></span>
+                </div>
+                <div class="form-group mt">
+                    <input type="submit" value="Save" class="btn btn-outline-primary" />
+                    <a class="btn-link" onclick="CancelEdit()" style="cursor: pointer">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CancelEdit() {
+        location.reload();
+    }
+</script>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

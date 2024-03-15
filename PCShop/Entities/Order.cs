@@ -12,7 +12,6 @@ namespace PCShop.Entities
         public DateTime OrderedOn { get; set; }
 
         [Required]
-        [MaxLength(36)]
         public string UserId { get; set; }
         public User User { get; set; }
 

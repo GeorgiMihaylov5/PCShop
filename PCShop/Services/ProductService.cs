@@ -15,14 +15,14 @@ namespace PCShop.Services
         }
         public Product Create(string name, string description, string model, int quantity, decimal price, string image, Category category)
         {
-            var product = new Product 
-            { 
-                Name = name, 
-                Description = description, 
-                Model = model, 
-                Quantity = quantity, 
-                Price = price, 
-                Image = image, 
+            var product = new Product
+            {
+                Name = name,
+                Description = description,
+                Model = model,
+                Quantity = quantity,
+                Price = price,
+                Image = image,
                 Category = category,
                 AddedOn = DateTime.UtcNow,
                 Discount = 0,
@@ -37,7 +37,7 @@ namespace PCShop.Services
 
         public Product Get(string id)
         {
-            if(id is null)
+            if (id is null)
             {
                 throw new ArgumentNullException("Invalid ID: ID cannot be null");
             }
@@ -54,10 +54,10 @@ namespace PCShop.Services
                 .ToList();
         }
 
-        public ICollection<Product> GetAllByCategory(Category category)
+        public ICollection<Product> GetAllByCategory(string category)
         {
             return _context.Products
-                .Where(x => x.Category == category && !x.IsDeleted)
+                .Where(x => x.Category == (Category)Enum.Parse(typeof(Category), category, true) && !x.IsDeleted)
                 .ToList();
         }
 
@@ -87,11 +87,22 @@ namespace PCShop.Services
 
         public Product SetDiscount(string id, int percentage)
         {
-            var product = Get(id) ?? throw new InvalidOperationException();
+            var product = Get(id);
 
-            if (percentage < 0 || percentage > 100) 
+            if (product is null)
             {
-                throw new InvalidOperationException("Wrong percentage bro");
+                return null;
+            }
+
+            if (product.Discount != 0)
+            {
+                product.Price += product.Discount;
+                percentage += (int)(product.Discount * 100 / product.Price);
+            }
+
+            if (percentage < 0 && percentage > 100)
+            {
+                throw new InvalidDataException("Percentage cannot be highter that 100!");
             }
 
             product.Discount = product.Price * percentage / 100;
@@ -114,11 +125,59 @@ namespace PCShop.Services
             product.Price = price;
             product.Image = image;
             product.Category = category;
+            product.Discount = 0;
 
             _context.Products.Update(product);
             _context.SaveChanges();
 
             return product;
+        }
+
+        public ICollection<Product> Search(string filter, int minPrice, int maxPrice, string name, string model, IEnumerable<Product> oldProducts)
+        {
+            var products = new List<Product>();
+
+            if (name is not null)
+            {
+                var currentProducts = oldProducts.Where(x => x.Name.ToLower().StartsWith(name?.ToLower())).ToList();
+                products.AddRange(currentProducts);
+            }
+            else
+            {
+                products = oldProducts.ToList();
+            }
+            if (model is not null)
+            {
+                products = products.Where(x => x.Model.ToLower().StartsWith(model?.ToLower())).Distinct().ToList();
+            }
+
+            if (minPrice > 0 && maxPrice > minPrice)
+            {
+                products = products.Where(x => x.Price >= minPrice && x.Price <= maxPrice).ToList();
+            }
+            else if (minPrice == maxPrice && minPrice > 0)
+            {
+                products = products.Where(x => x.Price == minPrice).ToList();
+            }
+            else if (minPrice > 0 && maxPrice < minPrice)
+            {
+                products = products.Where(x => x.Price >= minPrice).ToList();
+            }
+            else if (maxPrice > 0)
+            {
+                products = products.Where(x => x.Price <= maxPrice).ToList();
+            }
+
+            if (filter == "1")
+            {
+                products = products.Where(x => x.Discount != 0).ToList();
+            }
+            else if (filter == "2")
+            {
+                products = products.OrderBy(x => x.Price).ToList();
+            }
+
+            return products;
         }
     }
 }

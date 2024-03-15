@@ -1,0 +1,66 @@
+﻿@using PCShop.Entities.Enums;
+@using PCShop.Models;
+
+@model IEnumerable<PCShop.Models.OrderVM>
+
+<div class="d-lg-inline-block align-top col-3" id="filter-left">
+    @await Html.PartialAsync("~/Views/Users/_ManageLayoutPartialView.cshtml")
+</div>
+<div class="d-lg-inline-block align-top col-md-8 m-auto">
+    @if ((ViewData["Title"] as string) == "Orders")
+    {
+        @await Html.PartialAsync("~/Views/Users/_ControlPanelPartialView.cshtml")
+    }
+
+    @if (Model.Count() == 0)
+    {
+        <h4>No Orders</h4>
+    }
+    @if (Model.Count() > 0)
+    {
+        <div class="alert alert-info" style="margin-top: 25px">
+            <h2 class="text-center">Orders - @Model.Count()</h2>
+        </div>
+
+        @foreach (var item in Model)
+        {
+            <div>
+                <div>
+                    <h4>
+                        Order
+                    </h4>
+                    <div class="row justify-content-between m-0">
+                        <span>
+                            Status: @item.Status
+                        </span>
+                        <span>
+                            Ordered on: @item.OrderedOn
+                        </span>
+                    </div>
+                </div>
+                <div class="row justify-content-between m-0">
+                    <p>User: @item.User.FirstName @item.User.LastName</p>
+                </div>
+                <div class="row justify-content-between m-0">
+                    <p class="order-price-p">Total Price: @item.TotalPrice</p>
+
+                    <div>
+                        @if (User.IsInRole("Employee"))
+                        {
+                            <form asp-action="EditStatus" asp-controller="Orders" method="post" class="d-flex justify-content-between">
+                                <input name="Id" value="@item.Id" hidden />
+                                <select name="Status" class="form-control" asp-items="Html.GetEnumSelectList<OrderStatus>().Select(option => new SelectListItem {
+                    Text = option.Text,
+                    Value = option.Value,
+                    Selected = (option.Text == item.Status.ToString())
+                })" style="max-width: 200px;"></select>
+                                <input type="submit" value="Change Status" class="btn btn-success" />
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+            <hr />
+        }
+    }
+</div>

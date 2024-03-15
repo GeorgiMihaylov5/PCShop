@@ -1,0 +1,32 @@
+﻿@model PCShop.Models.LoginVM
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="text-center m-auto">
+    <div class="d-inline-block col-8" style="max-width: 419px">
+        <h1 class="text-center mb-3">Welcome!</h1>
+        <form id="account" method="post">
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-circle-user icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="@Model.Username" class="form-control" placeholder="Username" />
+                </div>
+                <span asp-validation-for="@Model.Username" class="text-danger"></span>
+            </div>
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-lock icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="@Model.Password" class="form-control" placeholder="Password" type="password" />
+                </div>
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger m-auto" style="width: 220px"></div>
+            <div class="form-group mt-4">
+                <button type="submit" class="btn-radius btn btn-outline-primary btn-lg">LOGIN</button>
+            </div>
+            <a asp-controller="Users" asp-action="Register" style="margin-left: 32px;">Register as new user</a>
+        </form>
+    </div>
+</div>

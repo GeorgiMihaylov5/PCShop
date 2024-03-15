@@ -6,7 +6,7 @@ namespace PCShop.Abstraction
     public interface IProductService
     {
         public ICollection<Product> GetAll();
-        public ICollection<Product> GetAllByCategory(Category category);
+        public ICollection<Product> GetAllByCategory(string category);
         public Product SetDiscount(string id, int percentage);
         public Product RemoveDiscount(string id);
         public Product Get(string id);
@@ -27,8 +27,7 @@ namespace PCShop.Abstraction
             string image,
             Category category);
 
-        //TODO
-        //public ICollection<Product> SearchBy();
+        public ICollection<Product> Search(string filter, int minPrice, int maxPrice, string name, string model, IEnumerable<Product> oldProducts);
         //public ICollection<Product> GetBestSellers();
     }
 }

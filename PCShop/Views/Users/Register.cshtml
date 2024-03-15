@@ -1,0 +1,70 @@
+﻿@model PCShop.Models.RegisterVM
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="text-center">
+    <div class="d-lg-inline-block align-top col-8" style="max-width: 419px">
+        <h1 class="text-center mb-3">Register</h1>
+        <form asp-action="Register" onsubmit="return isUsernameFree(users)">
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-circle-user icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-4">
+                    <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                </div>
+                <div class="d-inline-block icon-div-width-4">
+                    <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                </div>
+            </div>
+            <span asp-validation-for="FirstName" class="text-danger icon-div-width-4"></span>
+            <span asp-validation-for="LastName" class="text-danger icon-div-width-4"></span>
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-envelope icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                </div>
+            </div>
+            <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-address-card icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="Username" class="form-control" placeholder="Username" id="username" />
+                </div>
+            </div>
+            <span asp-validation-for="Username" class="text-danger"></span>
+            <span class="text-danger d-none" id="usernameEror"></span>
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-lock icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="Password" class="form-control" placeholder="Password" type="password" />
+                </div>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="mb-2 icon-div-mw-3">
+                <span><i class="fa-solid fa-key icon-width"></i></span>
+                <div class="d-inline-block icon-div-width-9">
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" type="password" />
+                </div>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <div class="form-group mt-4">
+                <button type="submit" class="btn-radius btn btn-outline-primary btn-lg">REGISTER</button>
+                <p class="mt-1 ml-4">Already have an account? <a asp-action="Login" asp-controller="Users">Login here</a></p>
+            </div>
+        </form>
+    </div>
+    <div class="d-inline align-top col-3">
+        <img src="~/Images/registerImage.webp" width="400" height="400" />
+    </div>
+</div>
+<script>
+    let users = @Json.Serialize(ViewBag.Users);
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
