@@ -104,6 +104,11 @@ namespace PCShop.Services
             product.Discount = product.Price * percentage / 100;
             product.Price -= product.Discount;
 
+            if(product.Price < 0)
+            {
+                throw new InvalidProductPriceException();
+            }
+
             _context.Products.Update(product);
             _context.SaveChanges();
 

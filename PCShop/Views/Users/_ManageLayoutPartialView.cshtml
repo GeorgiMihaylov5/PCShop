@@ -9,7 +9,7 @@
         <li class="nav-item">
             <a class="btn nav-link profile-nav" asp-action="ChangePassword" asp-controller="Users">Change Password</a>
         </li>
-        @if (User.IsInRole("Employee"))
+        @if (User.IsInRole("Employee") || User.IsInRole("Admin"))
         {
 
             <li class="nav-item mb-3">

@@ -12,8 +12,8 @@ using PCShop.Data;
 namespace PCShop.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240312193135_Initial")]
-    partial class Initial
+    [Migration("20240315174234_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -283,7 +283,7 @@ namespace PCShop.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Age")
+                    b.Property<int?>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
