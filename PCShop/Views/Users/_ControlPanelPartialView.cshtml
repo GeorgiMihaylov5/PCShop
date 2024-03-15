@@ -32,17 +32,13 @@
     if (urlAdmin[urlAdmin.length - 2] == 'Orders' && urlAdmin[urlAdmin.length - 1] == 'All') {
         btnsAdmin[0].className += " active";
     }
-    else if (urlAdmin[urlAdmin.length - 2] == 'Orders' && urlAdmin[urlAdmin.length - 1] == 'Rejected') {
-        btnsAdmin[1].className += " active";
-    }
-
-    if (urlAdmin[urlAdmin.length - 2] == 'Employees' && urlAdmin[urlAdmin.length - 1] == 'All') {
+    if (urlAdmin[urlAdmin.length - 2] == 'Users' && urlAdmin[urlAdmin.length - 1] == 'AllEmployees') {
         btnsAdmin[2].className += " active";
     }
-    else if (urlAdmin[urlAdmin.length - 2] == 'Clients' && urlAdmin[urlAdmin.length - 1] == 'All') {
-        btnsAdmin[3].className += " active";
+    else if (urlAdmin[urlAdmin.length - 2] == 'Users' && urlAdmin[urlAdmin.length - 1] == 'AllClients') {
+        btnsAdmin[1].className += " active";
     }
     else if (urlAdmin[urlAdmin.length - 2] == 'Products' && urlAdmin[urlAdmin.length - 1] == 'AllTable') {
-        btnsAdmin[4].className += " active";
+        btnsAdmin[3].className += " active";
     }
 </script>

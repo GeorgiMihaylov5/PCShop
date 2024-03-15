@@ -5,6 +5,7 @@ using PCShop.Abstraction;
 using PCShop.Entities;
 using PCShop.Entities.Enums;
 using PCShop.Models;
+using System.Data;
 using System.Security.Claims;
 
 namespace PCShop.Controllers
@@ -20,7 +21,7 @@ namespace PCShop.Controllers
             this.userManager = userManager;
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult All()
         {
             ViewData["Title"] = "Orders";
@@ -146,7 +147,7 @@ namespace PCShop.Controllers
             }
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public IActionResult EditStatus(OrderVM orderVM)
         {

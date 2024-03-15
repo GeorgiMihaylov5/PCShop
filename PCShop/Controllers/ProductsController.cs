@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PCShop.Abstraction;
+using PCShop.Entities;
 using PCShop.Models;
 
 namespace PCShop.Controllers
@@ -34,7 +35,15 @@ namespace PCShop.Controllers
             return View(products);
         }
 
-        [Authorize("Employee")]
+        [HttpPost]
+        public IActionResult All(string filter, int minPrice, int maxPrice, string name, string model)
+        {
+            var oldProducts = _productService.GetAll();
+           
+            return Search(filter, minPrice,maxPrice, name, model, oldProducts);
+        }
+
+        [Authorize(Roles = "Employee")]
         public IActionResult AllTable()
         {
             var products = _productService.GetAll()
@@ -76,6 +85,15 @@ namespace PCShop.Controllers
             return View(nameof(All), products);
         }
 
+        [HttpPost]
+        [Route("[controller]/[action]/{category}")]
+        public IActionResult AllByCategory(string category, string filter, int minPrice, int maxPrice, string name, string model)
+        {
+            var oldProducts = _productService.GetAllByCategory(category);
+
+           return Search(filter, minPrice, maxPrice, name, model, oldProducts);
+        }
+
         public IActionResult AllDiscounts()
         {
             var products = _productService.GetAll()
@@ -96,7 +114,17 @@ namespace PCShop.Controllers
 
             return View(nameof(All), products);
         }
-        
+
+        [HttpPost]
+        public IActionResult AllDiscounts(string filter, int minPrice, int maxPrice, string name, string model)
+        {
+            var oldProducts = _productService.GetAll()
+                 .Where(x => x.Discount > 0)
+                 .ToList();
+
+           return Search(filter, minPrice, maxPrice, name, model, oldProducts);
+        }
+
         public IActionResult Details(string id)
         {
             if (id is null)
@@ -121,7 +149,7 @@ namespace PCShop.Controllers
                 });
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult Create()
         {
             ViewData["Title"] = "Create";
@@ -129,7 +157,7 @@ namespace PCShop.Controllers
             return View();
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public IActionResult Create(ProductVM productVM)
         {
@@ -149,7 +177,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult Edit(string id)
         {
             ViewData["Title"] = "Edit";
@@ -177,7 +205,7 @@ namespace PCShop.Controllers
                 });
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public IActionResult Edit(ProductVM productVM)
         {
@@ -198,7 +226,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult Delete(string id)
         {
             if (id is null)
@@ -211,7 +239,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllTable));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult AddDiscount(string id)
         {
             _productService.SetDiscount(id, 5);
@@ -219,12 +247,32 @@ namespace PCShop.Controllers
             return RedirectToAction("AllTable");
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult RemoveDiscount(string id)
         {
             _productService.RemoveDiscount(id);
 
             return RedirectToAction("AllTable");
+        }
+
+        private IActionResult Search(string filter, int minPrice, int maxPrice, string name, string model, ICollection<Product> oldProducts)
+        {
+            var productsVm = _productService.Search(filter, minPrice, maxPrice, name, model, oldProducts)
+                        .Select(p => new ProductVM
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Model = p.Model,
+                            Description = p.Description,
+                            Price = p.Price,
+                            Discount = p.Discount,
+                            AddedOn = p.AddedOn,
+                            Quantity = p.Quantity,
+                            Image = p.Image,
+                            Category = p.Category,
+                        }).ToList();
+
+            return View(nameof(All), productsVm);
         }
     }
 }

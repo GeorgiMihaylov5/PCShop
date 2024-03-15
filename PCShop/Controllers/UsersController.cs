@@ -48,7 +48,8 @@ namespace PCShop.Controllers
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
             if (!ModelState.IsValid
-                || await userManager.FindByNameAsync(registerVM.Username) is not null)
+                || await userManager.FindByNameAsync(registerVM.Username) is not null
+                || await userManager.FindByEmailAsync(registerVM.Email) is not null)
             {
                 return View(registerVM);
             }
@@ -130,13 +131,13 @@ namespace PCShop.Controllers
             return View(userVM);
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public async Task<IActionResult> Create(RegisterVM userVM)
         {
@@ -205,7 +206,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(Profile));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> AllEmployees()
         {
             var users = await userManager.GetUsersInRoleAsync("employee");
@@ -224,7 +225,7 @@ namespace PCShop.Controllers
             }));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> AllClients()
         {
             var users = await userManager.GetUsersInRoleAsync("client");
@@ -243,7 +244,7 @@ namespace PCShop.Controllers
             }));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public async Task<IActionResult> Promote(string userId)
         {
@@ -264,7 +265,7 @@ namespace PCShop.Controllers
             return RedirectToAction(nameof(AllEmployees));
         }
 
-        [Authorize("Employee")]
+        [Authorize(Roles = "Employee")]
         [HttpPost]
         public async Task<IActionResult> Demote(string userId)
         {

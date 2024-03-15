@@ -38,14 +38,14 @@
             <div class="mb-2 icon-div-mw-3">
                 <span><i class="fa-solid fa-lock icon-width"></i></span>
                 <div class="d-inline-block icon-div-width-9">
-                    <input asp-for="Password" class="form-control" placeholder="Password" />
+                    <input asp-for="Password" class="form-control" placeholder="Password" type="password" />
                 </div>
             </div>
             <span asp-validation-for="Password" class="text-danger"></span>
             <div class="mb-2 icon-div-mw-3">
                 <span><i class="fa-solid fa-key icon-width"></i></span>
                 <div class="d-inline-block icon-div-width-9">
-                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" type="password" />
                 </div>
             </div>
             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>

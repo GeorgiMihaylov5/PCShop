@@ -132,5 +132,52 @@ namespace PCShop.Services
 
             return product;
         }
+
+        public ICollection<Product> Search(string filter, int minPrice, int maxPrice, string name, string model, IEnumerable<Product> oldProducts)
+        {
+            var products = new List<Product>();
+
+            if (name is not null)
+            {
+                var currentProducts = oldProducts.Where(x => x.Name.ToLower().StartsWith(name?.ToLower())).ToList();
+                products.AddRange(currentProducts);
+            }
+            else
+            {
+                products = oldProducts.ToList();
+            }
+            if (model is not null)
+            {
+                products = products.Where(x => x.Model.ToLower().StartsWith(model?.ToLower())).Distinct().ToList();
+            }
+
+            if (minPrice > 0 && maxPrice > minPrice)
+            {
+                products = products.Where(x => x.Price >= minPrice && x.Price <= maxPrice).ToList();
+            }
+            else if (minPrice == maxPrice && minPrice > 0)
+            {
+                products = products.Where(x => x.Price == minPrice).ToList();
+            }
+            else if (minPrice > 0 && maxPrice < minPrice)
+            {
+                products = products.Where(x => x.Price >= minPrice).ToList();
+            }
+            else if (maxPrice > 0)
+            {
+                products = products.Where(x => x.Price <= maxPrice).ToList();
+            }
+
+            if (filter == "1")
+            {
+                products = products.Where(x => x.Discount != 0).ToList();
+            }
+            else if (filter == "2")
+            {
+                products = products.OrderBy(x => x.Price).ToList();
+            }
+
+            return products;
+        }
     }
 }
